@@ -1,0 +1,70 @@
+[project]
+name = "template-pypackage"
+version = "0.1.0"
+description = "A Python package."
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [{ name = "Keksi", email = "hello@keksi.dev" }]
+dependencies = [
+  "typer>=0.27.3",
+]
+
+[project.scripts]
+"template-pypackage" = "template_pypackage.cli:main"
+
+[dependency-groups]
+dev = [
+  "commitizen>=4.19.2",
+  "coverage>=7.16.2",
+  "prek>=0.5.5",
+  "pytest>=9.1.1",
+  "ruff>=0.17.0",
+  "rumdl>=0.2.79",
+  "tombi>=1.8.4",
+  "ty>=0.0.86",
+]
+docs = ["zensical>=0.0.69"]
+
+[build-system]
+requires = ["uv_build>=0.13.0,<0.14"]
+build-backend = "uv_build"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "v$version"
+version_scheme = "pep440"
+version_provider = "uv"
+update_changelog_on_bump = true
+major_version_zero = true
+
+[tool.coverage.run]
+branch = true
+omit = ["*/__main__.py"]
+parallel = true
+source = ["src"]
+
+[tool.pytest.ini_options]
+cache_dir = ".cache/pytest"
+testpaths = "tests"
+
+[tool.ruff]
+cache-dir = "~/.cache/ruff"
+line-length = 120
+output-format = "grouped"
+
+[tool.ruff.format]
+docstring-code-format = true
+indent-style = "space"
+line-ending = "lf"
+quote-style = "double"
+
+[tool.ruff.lint]
+preview = true
+select = ["correctness", "suspicious", "complexity", "performance", "style", "security"]
+
+[tool.ruff.lint.isort]
+required-imports = ["from __future__ import annotations"]
+lines-after-imports = 2
+
+[tool.tombi.files]
+exclude = ["uv.lock"]

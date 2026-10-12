@@ -1,0 +1,24 @@
+[tools]
+uv = "latest"
+
+[settings]
+python.uv_venv_auto = "create|source"
+
+[hooks]
+enter = ["uv sync", "prek install"]
+
+[tasks.fix]
+description = "Apply formatting and lint fixes"
+run = ["ruff format", "ruff check --fix"]
+
+[tasks.check]
+description = "Verify formatting, linting, type checking, and tests"
+run = ["ruff format --check", "ruff check", "ty check", "pytest"]
+
+[tasks."docs:dev"]
+description = "Run docs server for development"
+run = ["uv run --group docs zensical serve"]
+
+[tasks."docs:build"]
+description = "Build docs for production"
+run = ["uv run --group docs zensical build"]
