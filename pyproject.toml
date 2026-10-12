@@ -12,6 +12,7 @@ dependencies = [
 
 [project.scripts]
 licensd = "licensd.cli:app"
+mklicense = "licensd.cli:app"
 
 [dependency-groups]
 dev = [
