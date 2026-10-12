@@ -1,8 +1,8 @@
 [project]
-site_name = "Package Template"
-site_url = "https://keksiqc.github.io/template-pypackage/"
-repo_url = "https://github.com/keksiqc/template-pypackage"
-repo_name = "keksiqc/template-pypackage"
+site_name = "licensd"
+site_url = "https://keksiqc.github.io/licensd/"
+repo_url = "https://github.com/keksiqc/licensd"
+repo_name = "keksiqc/licensd"
 copyright = "Copyright \u0026copy; 2026 Keksi"
 
 nav = [{ "Home" = "index.md" }]

@@ -1,6 +1,6 @@
-# Package Template
+# licensd
 
-A Python package.
+A lightweight license generator CLI.
 
 ## Getting started
 

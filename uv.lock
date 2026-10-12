@@ -700,7 +700,7 @@ wheels = [
 ]
 
 [[package]]
-name = "template-pypackage"
+name = "licensd"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

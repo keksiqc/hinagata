@@ -1,4 +1,4 @@
-"""Python package."""
+"""Lightweight license generator."""
 
 from __future__ import annotations
 

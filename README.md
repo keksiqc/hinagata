@@ -1,6 +1,6 @@
-# Package Template
+# licensd
 
-A Python package.
+A lightweight license generator CLI.
 
 ## Getting started
 
@@ -13,7 +13,7 @@ uv sync
 Run the command-line interface:
 
 ```sh
-uv run template-pypackage
+uv run licensd
 ```
 
 Run the checks:

@@ -9,13 +9,13 @@ from collections.abc import Sequence
 def main(argv: Sequence[str] | None = None) -> None:
     """Run the command-line interface."""
     parser = argparse.ArgumentParser(
-        prog="template-pypackage",
-        description="A Python package.",
+        prog="licensd",
+        description="A lightweight license generator CLI.",
     )
     parser.add_argument(
         "name",
         nargs="?",
-        default="template-pypackage",
+        default="licensd",
         help="Name to include in the greeting.",
     )
     args = parser.parse_args(argv)
