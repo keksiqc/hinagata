@@ -1,6 +1,6 @@
 [project]
 name = "licensd"
-version = "0.1.0"
+version = "0.0.0"
 description = "A lightweight license generator CLI."
 readme = "README.md"
 requires-python = ">=3.12"
