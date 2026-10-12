@@ -6,11 +6,12 @@ readme = "README.md"
 requires-python = ">=3.12"
 authors = [{ name = "Keksi", email = "hello@keksi.dev" }]
 dependencies = [
+  "questionary>=2.1.1",
   "typer>=0.27.3",
 ]
 
 [project.scripts]
-"licensd" = "licensd.cli:main"
+licensd = "licensd.cli:app"
 
 [dependency-groups]
 dev = [

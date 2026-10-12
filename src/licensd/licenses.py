@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from functools import cache
 from importlib.resources import files
@@ -9,6 +10,7 @@ from importlib.resources import files
 
 YEAR_PLACEHOLDER = "[year]"
 AUTHOR_PLACEHOLDER = "[fullname]"
+_YEAR_PATTERN = re.compile(r"\d{4}(-\d{4})?")
 
 
 @dataclass(frozen=True, slots=True)
@@ -63,3 +65,8 @@ def find(key: str) -> License | None:
     """Look a license up by SPDX identifier, ignoring case."""
     wanted = key.strip().casefold()
     return next((lic for lic in LICENSES if lic.spdx_id.casefold() == wanted), None)
+
+
+def is_valid_year(value: str) -> bool:
+    """Whether the value is a year such as ``2026`` or a range such as ``2020-2026``."""
+    return _YEAR_PATTERN.fullmatch(value.strip()) is not None
