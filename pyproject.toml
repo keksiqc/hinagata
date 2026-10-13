@@ -69,5 +69,14 @@ select = ["correctness", "suspicious", "complexity", "performance", "style", "se
 required-imports = ["from __future__ import annotations"]
 lines-after-imports = 2
 
+[tool.rumdl]
+cache-dir = ".cache/rumdl"
+
+[tool.rumdl.per-file-flavor]
+"docs/**/*.md" = "mkdocs"
+
+[tool.rumdl.per-file-ignores]
+"CHANGELOG.md" = ["MD041"]
+
 [tool.tombi.files]
 exclude = ["uv.lock"]
