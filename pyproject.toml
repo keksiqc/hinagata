@@ -63,7 +63,14 @@ quote-style = "double"
 
 [tool.ruff.lint]
 preview = true
-select = ["correctness", "suspicious", "complexity", "performance", "style", "security"]
+select = [
+  "correctness",
+  "suspicious",
+  "complexity",
+  "performance",
+  "style",
+  "security",
+]
 
 [tool.ruff.lint.isort]
 required-imports = ["from __future__ import annotations"]
