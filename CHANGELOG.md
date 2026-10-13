@@ -1,3 +1,10 @@
+## v0.3.0 (2026-10-13)
+
+### Feat
+
+- enhance CLI to guide users through license and gitignore selection interactively
+- use subcommands and add gitignore generation
+
 ## v0.2.0 (2026-10-13)
 
 ### Feat
