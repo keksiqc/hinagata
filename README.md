@@ -1,5 +1,11 @@
 # hinagata
 
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json&style=for-the-badge)](https://github.com/astral-sh/ruff)
+[![Version](https://img.shields.io/pypi/v/hinagata?style=for-the-badge)](https://pypi.org/project/hinagata/)
+[![License](https://img.shields.io/pypi/l/hinagata.svg?style=for-the-badge)](https://github.com/keksiqc/hinagata/blob/main/LICENSE)
+[![Python versions](https://img.shields.io/pypi/pyversions/hinagata.svg?style=for-the-badge)](https://pypi.python.org/pypi/hinagata)
+[![Actions Status](https://img.shields.io/github/actions/workflow/status/keksiqc/hinagata/ci.yaml?style=for-the-badge&label=CI)](https://github.com/keksiqc/hinagata/actions)
+
 A lightweight CLI to generate project files like `LICENSE` and `.gitignore`.
 Pick from a filterable list, confirm the details, and get the file.
 
@@ -21,11 +27,11 @@ hinagata
 
 ## Installation
 
-| Method     | Run once              | Install                     | Upgrade                     |
-| ---------- | --------------------- | --------------------------- | --------------------------- |
-| `uv`       | `uvx hinagata`        | `uv tool install hinagata`  | `uv tool upgrade hinagata`  |
-| `pipx`     | `pipx run hinagata`   | `pipx install hinagata`     | `pipx upgrade hinagata`     |
-| `pip`      |                       | `pip install hinagata`      | `pip install -U hinagata`   |
+| Method | Run once            | Install                    | Upgrade                    |
+| ------ | ------------------- | -------------------------- | -------------------------- |
+| `uv`   | `uvx hinagata`      | `uv tool install hinagata` | `uv tool upgrade hinagata` |
+| `pipx` | `pipx run hinagata` | `pipx install hinagata`    | `pipx upgrade hinagata`    |
+| `pip`  |                     | `pip install hinagata`     | `pip install -U hinagata`  |
 
 `pip` installs into the current environment, so use a virtual environment or
 `pip install --user hinagata`. With `uv`, `uv pip install hinagata` works the
@@ -86,13 +92,13 @@ Each template is written under a `### Name ###` header, so you can see where a
 block came from. Without arguments you get a checklist where you can type to
 filter and pick as many templates as you need.
 
-| Option         | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `[TEMPLATE]...`| Template names, case-insensitive. Asked when omitted.                 |
-| `-o, --output` | File to write, or `-` for stdout. Defaults to `.gitignore`.           |
-| `-f, --force`  | Replace an existing file without asking.                              |
-| `--append`     | Add the templates the file is missing, leaving everything else alone. |
-| `-l, --list`   | List the available templates.                                         |
+| Option          | Description                                                           |
+| --------------- | --------------------------------------------------------------------- |
+| `[TEMPLATE]...` | Template names, case-insensitive. Asked when omitted.                 |
+| `-o, --output`  | File to write, or `-` for stdout. Defaults to `.gitignore`.           |
+| `-f, --force`   | Replace an existing file without asking.                              |
+| `--append`      | Add the templates the file is missing, leaving everything else alone. |
+| `-l, --list`    | List the available templates.                                         |
 
 If the file already exists, a terminal session asks whether to append,
 overwrite or cancel. Without a terminal the command fails unless you pass
