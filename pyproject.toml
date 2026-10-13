@@ -26,9 +26,9 @@ dependencies = [
 ]
 
 [project.urls]
-changelog = "https://github.com/keksiqc/hinagata/blob/main/CHANGELOG.md"
-documentation = "https://keksiqc.github.io/hinagata/"
-repository = "https://github.com/keksiqc/hinagata"
+Changelog = "https://github.com/keksiqc/hinagata/blob/main/CHANGELOG.md"
+Documentation = "https://keksiqc.github.io/hinagata/"
+Repository = "https://github.com/keksiqc/hinagata"
 
 [project.scripts]
 hina = "hinagata.cli:app"
