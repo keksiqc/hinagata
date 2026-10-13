@@ -21,7 +21,7 @@ from .licenses import LICENSES, License, find, is_valid_year
 
 STDOUT = "-"
 
-app = typer.Typer(add_completion=False, no_args_is_help=True, help="Generate license and gitignore files.")
+app = typer.Typer(add_completion=False, help="Generate license and gitignore files.")
 console = Console(stderr=True)
 
 
@@ -31,13 +31,24 @@ def _show_version(value: bool) -> None:
         raise typer.Exit
 
 
-@app.callback()
+@app.callback(invoke_without_command=True)
 def main(
+    ctx: typer.Context,
     _version: Annotated[
         bool, typer.Option("--version", help="Show the version.", callback=_show_version, is_eager=True)
     ] = False,
 ) -> None:
-    """Generate license and gitignore files."""
+    """Generate license and gitignore files.
+
+    Run without a command to be guided through both, one after the other.
+    """
+    if ctx.invoked_subcommand is not None:
+        return
+    if not is_interactive():
+        typer.echo(ctx.get_help())
+        raise typer.Exit
+    license_command()
+    gitignore_command()
 
 
 @app.command("license")

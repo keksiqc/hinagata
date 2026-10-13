@@ -23,8 +23,12 @@ pip install hinagata
 
 ## Usage
 
-`hinagata` has two commands, `license` and `gitignore`. Run either without
-arguments to choose interactively, or pass everything as arguments and flags.
+Running `hinagata` with no command in a terminal goes through every select one
+after another: the license, then the gitignore templates.
+
+The two steps are also available as separate commands, `license` and
+`gitignore`. Run either without arguments to choose interactively, or pass
+everything as arguments and flags.
 
 ### License
 

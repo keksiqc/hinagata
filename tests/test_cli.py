@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import pytest
+import typer
 from typer.testing import CliRunner
 
-from hinagata import cli, prompts
+from hinagata import cli, gitignore, prompts
 from hinagata.licenses import LICENSES, find
 
 
@@ -20,6 +21,14 @@ def test_version() -> None:
 
     assert result.exit_code == 0
     assert result.stdout.strip()
+
+
+def test_no_command_without_terminal_shows_help() -> None:
+    result = runner.invoke(cli.app, [])
+
+    assert result.exit_code == 0
+    assert "license" in result.stdout
+    assert "gitignore" in result.stdout
 
 
 def test_list_shows_every_license() -> None:
@@ -162,3 +171,34 @@ def test_interactive_overwrite_confirmation(monkeypatch, tmp_path, answer, repla
 
     assert (out.read_text() != "old") is replaced
     assert result.exit_code == (0 if replaced else 1)
+
+
+@pytest.mark.usefixtures("terminal")
+def test_no_command_runs_every_select_in_turn(monkeypatch, tmp_path) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(prompts, "select_license", lambda _licenses: find("ISC"))
+    monkeypatch.setattr(prompts, "ask_author", lambda _default: "Ada Lovelace")
+    monkeypatch.setattr(prompts, "ask_year", lambda _default: "1843")
+    monkeypatch.setattr(prompts, "select_templates", lambda _templates: [gitignore.find("Python")])
+
+    result = runner.invoke(cli.app, [])
+
+    assert result.exit_code == 0
+    assert "Copyright (c) 1843 Ada Lovelace" in (tmp_path / "LICENSE").read_text()
+    assert "### Python ###" in (tmp_path / ".gitignore").read_text()
+
+
+@pytest.mark.usefixtures("terminal")
+def test_no_command_stops_when_a_select_is_aborted(monkeypatch, tmp_path) -> None:
+    monkeypatch.chdir(tmp_path)
+
+    def abort(_licenses) -> None:
+        raise typer.Abort
+
+    monkeypatch.setattr(prompts, "select_license", abort)
+    monkeypatch.setattr(prompts, "select_templates", lambda _templates: pytest.fail("should not be reached"))
+
+    result = runner.invoke(cli.app, [])
+
+    assert result.exit_code != 0
+    assert not (tmp_path / ".gitignore").exists()

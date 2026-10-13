@@ -9,16 +9,15 @@ Also available as the shorter `hina`.
 ## Quick start
 
 ```sh
-uvx hinagata license MIT
-uvx hinagata gitignore Python Linux
+uvx hinagata
 ```
 
-That runs `hinagata` once without installing anything. To keep it around:
+That runs `hinagata` once without installing anything. It walks you through
+choosing a license, then gitignore templates. To keep it around:
 
 ```sh
 uv tool install hinagata
-hinagata license
-hinagata gitignore
+hinagata
 ```
 
 ## Installation
@@ -44,9 +43,14 @@ uv sync && uv run hinagata
 
 ## Usage
 
-`hinagata` has two commands, `license` and `gitignore`. Run either without
-arguments to choose interactively. Everything can also be passed as arguments
-and flags, which skips the matching prompt and makes the command scriptable.
+Running `hinagata` with no command in a terminal goes through every select one
+after another: the license (plus author and year where the license needs them),
+then the gitignore templates. Without a terminal it prints the help instead.
+
+The two steps are also available as separate commands, `license` and
+`gitignore`. Run either without arguments to choose interactively. Everything
+can also be passed as arguments and flags, which skips the matching prompt and
+makes the command scriptable.
 
 ### License
 
