@@ -1,3 +1,13 @@
+## v0.2.0 (2026-10-13)
+
+### Feat
+
+- rename package from licensd to hinagata
+
+### Fix
+
+- enable annotated tags in commitizen configuration
+
 ## v0.1.0 (2026-10-12)
 
 ### Feat
