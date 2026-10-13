@@ -21,7 +21,7 @@ from .licenses import LICENSES, License, find, is_valid_year
 
 STDOUT = "-"
 
-app = typer.Typer(add_completion=False, help="Generate license and gitignore files.")
+app = typer.Typer(add_completion=False, help="Generate project files such as a license and a gitignore.")
 console = Console(stderr=True)
 
 
@@ -38,7 +38,7 @@ def main(
         bool, typer.Option("--version", help="Show the version.", callback=_show_version, is_eager=True)
     ] = False,
 ) -> None:
-    """Generate license and gitignore files.
+    """Generate project files such as a license and a gitignore.
 
     Run without a command to be guided through both, one after the other.
     """

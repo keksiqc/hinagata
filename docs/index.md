@@ -1,8 +1,7 @@
 # hinagata
 
-A lightweight CLI that generates the boilerplate files for a new project:
-a `LICENSE` and a `.gitignore`. Pick from a filterable list, confirm the
-details, and get the file.
+A lightweight CLI to generate project files like `LICENSE` and `.gitignore`.
+Pick from a filterable list, confirm the details, and get the file.
 
 ## Installation
 
