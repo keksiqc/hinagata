@@ -25,6 +25,11 @@ dependencies = [
   "typer>=0.27.3",
 ]
 
+[project.urls]
+changelog = "https://github.com/keksiqc/hinagata/blob/main/CHANGELOG.md"
+documentation = "https://keksiqc.github.io/hinagata/"
+repository = "https://github.com/keksiqc/hinagata"
+
 [project.scripts]
 hina = "hinagata.cli:app"
 hinagata = "hinagata.cli:app"
