@@ -1,6 +1,6 @@
 [project]
 name = "hinagata"
-version = "0.3.0"
+version = "0.3.1"
 description = "A lightweight CLI to generate project files like LICENSE and .gitignore."
 readme = "README.md"
 requires-python = ">=3.12"
