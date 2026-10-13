@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from licensd.licenses import LICENSES, find
+from hinagata.licenses import LICENSES, find
 
 
 @pytest.mark.parametrize("lic", LICENSES, ids=lambda lic: lic.spdx_id)

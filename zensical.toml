@@ -1,8 +1,8 @@
 [project]
-site_name = "licensd"
-site_url = "https://keksiqc.github.io/licensd/"
-repo_url = "https://github.com/keksiqc/licensd"
-repo_name = "keksiqc/licensd"
+site_name = "hinagata"
+site_url = "https://keksiqc.github.io/hinagata/"
+repo_url = "https://github.com/keksiqc/hinagata"
+repo_name = "keksiqc/hinagata"
 copyright = "Copyright \u0026copy; 2026 Keksi"
 
 nav = [{ "Home" = "index.md" }]

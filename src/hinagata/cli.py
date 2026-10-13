@@ -1,4 +1,4 @@
-"""Command-line interface for licensd."""
+"""Command-line interface for hinagata."""
 
 from __future__ import annotations
 
@@ -40,7 +40,7 @@ def generate(
 ) -> None:
     """Generate a license file for your project."""
     if show_version:
-        typer.echo(version("licensd"))
+        typer.echo(version("hinagata"))
         raise typer.Exit
     if list_licenses:
         _print_catalogue()

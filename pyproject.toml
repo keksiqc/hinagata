@@ -1,5 +1,5 @@
 [project]
-name = "licensd"
+name = "hinagata"
 version = "0.1.0"
 description = "A lightweight license generator CLI."
 readme = "README.md"
@@ -11,8 +11,8 @@ dependencies = [
 ]
 
 [project.scripts]
-licensd = "licensd.cli:app"
-mklicense = "licensd.cli:app"
+hina = "hinagata.cli:app"
+hinagata = "hinagata.cli:app"
 
 [dependency-groups]
 dev = [

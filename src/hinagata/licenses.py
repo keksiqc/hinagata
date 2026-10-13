@@ -38,7 +38,7 @@ class License:
 
 @cache
 def _read(filename: str) -> str:
-    return files("licensd").joinpath("data", filename).read_text(encoding="utf-8")
+    return files("hinagata").joinpath("data", filename).read_text(encoding="utf-8")
 
 
 LICENSES: tuple[License, ...] = (

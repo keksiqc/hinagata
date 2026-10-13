@@ -343,7 +343,7 @@ wheels = [
 ]
 
 [[package]]
-name = "licensd"
+name = "hinagata"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

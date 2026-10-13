@@ -3,8 +3,8 @@ from __future__ import annotations
 import pytest
 from typer.testing import CliRunner
 
-from licensd import cli, prompts
-from licensd.licenses import LICENSES, find
+from hinagata import cli, prompts
+from hinagata.licenses import LICENSES, find
 
 
 runner = CliRunner()
