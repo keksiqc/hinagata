@@ -1,21 +1,24 @@
 # hinagata
 
-A lightweight license generator CLI. Pick a license from a filterable list,
-confirm the author and year, and get a `LICENSE` file.
+A lightweight CLI that generates the boilerplate files for a new project:
+a `LICENSE` and a `.gitignore`. Pick from a filterable list, confirm the
+details, and get the file.
 
 Also available as the shorter `hina`.
 
 ## Quick start
 
 ```sh
-uvx hinagata
+uvx hinagata license MIT
+uvx hinagata gitignore Python Linux
 ```
 
 That runs `hinagata` once without installing anything. To keep it around:
 
 ```sh
 uv tool install hinagata
-hinagata
+hinagata license
+hinagata gitignore
 ```
 
 ## Installation
@@ -41,15 +44,17 @@ uv sync && uv run hinagata
 
 ## Usage
 
-Run without arguments to choose a license interactively. Everything can also be
-passed as flags, which skips the matching prompt and makes the command
-scriptable:
+`hinagata` has two commands, `license` and `gitignore`. Run either without
+arguments to choose interactively. Everything can also be passed as arguments
+and flags, which skips the matching prompt and makes the command scriptable.
+
+### License
 
 ```sh
-hinagata MIT --author "Ada Lovelace" --year 2026   # write ./LICENSE
-hinagata Apache-2.0 --output LICENSE.txt --force   # custom file, overwrite
-hinagata ISC -o - > LICENSE                        # print to stdout
-hinagata --list                                    # show the catalogue
+hinagata license MIT --author "Ada Lovelace" --year 2026   # write ./LICENSE
+hinagata license Apache-2.0 --output LICENSE.txt --force   # custom file, overwrite
+hinagata license ISC -o - > LICENSE                        # print to stdout
+hinagata license --list                                    # show the catalogue
 ```
 
 | Option         | Description                                               |
@@ -60,11 +65,36 @@ hinagata --list                                    # show the catalogue
 | `-o, --output` | File to write, or `-` for stdout. Defaults to `LICENSE`.  |
 | `-f, --force`  | Overwrite an existing file without asking.                |
 | `-l, --list`   | List the available licenses.                              |
-| `--version`    | Show the version.                                         |
 
 Author and year are only asked for licenses whose text contains them (MIT, ISC,
 BSD, 0BSD). The others, such as the GPL family and Apache-2.0, are written
 verbatim.
+
+### Gitignore
+
+```sh
+hinagata gitignore Python Linux VisualStudioCode   # write ./.gitignore
+hinagata gitignore Node --append                   # add to an existing file
+hinagata gitignore Rust -o - > .gitignore          # print to stdout
+hinagata gitignore --list                          # show the templates
+```
+
+Each template is written under a `### Name ###` header, so you can see where a
+block came from. Without arguments you get a checklist where you can type to
+filter and pick as many templates as you need.
+
+| Option         | Description                                                           |
+| -------------- | --------------------------------------------------------------------- |
+| `[TEMPLATE]...`| Template names, case-insensitive. Asked when omitted.                 |
+| `-o, --output` | File to write, or `-` for stdout. Defaults to `.gitignore`.           |
+| `-f, --force`  | Replace an existing file without asking.                              |
+| `--append`     | Add the templates the file is missing, leaving everything else alone. |
+| `-l, --list`   | List the available templates.                                         |
+
+If the file already exists, a terminal session asks whether to append,
+overwrite or cancel. Without a terminal the command fails unless you pass
+`--force` or `--append`. Appending is safe to repeat: templates whose header is
+already in the file are skipped.
 
 ### Short alias
 
@@ -72,7 +102,8 @@ verbatim.
 for everyday use once it is installed:
 
 ```sh
-hina MIT -a "Ada Lovelace"
+hina license MIT -a "Ada Lovelace"
+hina gitignore Python
 ```
 
 It ships inside the `hinagata` package rather than as a package of its own, so
@@ -80,8 +111,8 @@ It ships inside the `hinagata` package rather than as a package of its own, so
 installing, name the package explicitly:
 
 ```sh
-uvx --from hinagata hina MIT
-pipx run --spec hinagata hina MIT
+uvx --from hinagata hina license MIT
+pipx run --spec hinagata hina license MIT
 ```
 
 ## Bundled licenses
@@ -89,6 +120,14 @@ pipx run --spec hinagata hina MIT
 MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, BSL-1.0, MPL-2.0,
 LGPL-3.0, GPL-2.0, GPL-3.0, AGPL-3.0, Unlicense and CC0-1.0. The texts come
 from [choosealicense.com](https://github.com/github/choosealicense.com).
+
+## Bundled gitignore templates
+
+About 240 templates from [github/gitignore](https://github.com/github/gitignore)
+(CC0): the language and tool templates such as Python, Node and Rust, plus the
+`Global` ones for editors and operating systems such as VisualStudioCode, Linux
+and macOS. Refresh them with `python scripts/update_gitignore.py`, which also
+records the upstream commit in `src/hinagata/data/gitignore/SOURCE`.
 
 ## Development
 

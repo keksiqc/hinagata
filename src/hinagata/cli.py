@@ -15,18 +15,33 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from . import prompts
+from . import gitignore, prompts
 from .licenses import LICENSES, License, find, is_valid_year
 
 
 STDOUT = "-"
 
-app = typer.Typer(add_completion=False, help="Generate a license file for your project.")
+app = typer.Typer(add_completion=False, no_args_is_help=True, help="Generate license and gitignore files.")
 console = Console(stderr=True)
 
 
-@app.command()
-def generate(
+def _show_version(value: bool) -> None:
+    if value:
+        typer.echo(version("hinagata"))
+        raise typer.Exit
+
+
+@app.callback()
+def main(
+    _version: Annotated[
+        bool, typer.Option("--version", help="Show the version.", callback=_show_version, is_eager=True)
+    ] = False,
+) -> None:
+    """Generate license and gitignore files."""
+
+
+@app.command("license")
+def license_command(
     license_id: Annotated[
         str | None,
         typer.Argument(metavar="[LICENSE]", help="SPDX identifier such as MIT. Asked interactively when omitted."),
@@ -36,14 +51,10 @@ def generate(
     output: Annotated[Path, typer.Option("--output", "-o", help="File to write, or - for stdout.")] = Path("LICENSE"),
     force: Annotated[bool, typer.Option("--force", "-f", help="Overwrite an existing file.")] = False,
     list_licenses: Annotated[bool, typer.Option("--list", "-l", help="List the available licenses.")] = False,
-    show_version: Annotated[bool, typer.Option("--version", help="Show the version.", is_eager=True)] = False,
 ) -> None:
     """Generate a license file for your project."""
-    if show_version:
-        typer.echo(version("hinagata"))
-        raise typer.Exit
     if list_licenses:
-        _print_catalogue()
+        _print_licenses()
         raise typer.Exit
     if year is not None and not is_valid_year(year):
         msg = "use a year like 2026 or a range like 2020-2026"
@@ -60,6 +71,51 @@ def generate(
     _check_overwrite(output, force=force, interactive=interactive)
     output.write_text(text, encoding="utf-8")
     console.print(f"[green]✓[/] Wrote [bold]{lic.name}[/] to [cyan]{output}[/]")
+
+
+@app.command("gitignore")
+def gitignore_command(
+    names: Annotated[
+        list[str] | None,
+        typer.Argument(
+            metavar="[TEMPLATE]...", help="Template names such as Python. Asked interactively when omitted."
+        ),
+    ] = None,
+    output: Annotated[Path, typer.Option("--output", "-o", help="File to write, or - for stdout.")] = Path(
+        ".gitignore"
+    ),
+    force: Annotated[bool, typer.Option("--force", "-f", help="Overwrite an existing file.")] = False,
+    append: Annotated[
+        bool, typer.Option("--append", help="Add the templates missing from an existing file instead of replacing it.")
+    ] = False,
+    list_templates: Annotated[bool, typer.Option("--list", "-l", help="List the available templates.")] = False,
+) -> None:
+    """Generate a .gitignore file from one or more templates."""
+    if list_templates:
+        _print_templates()
+        raise typer.Exit
+    if append and force:
+        msg = "--append and --force cannot be combined"
+        raise typer.BadParameter(msg, param_hint="--append")
+
+    interactive = is_interactive()
+    templates = _resolve_templates(names, interactive=interactive)
+    text = gitignore.render(templates)
+    label = ", ".join(template.name for template in templates)
+
+    if str(output) == STDOUT:
+        typer.echo(text, nl=False)
+        return
+    if output.exists() and not force:
+        append = append or _ask_existing(output, interactive=interactive)
+    if append and output.exists():
+        existing = output.read_text(encoding="utf-8")
+        text = gitignore.merge(existing, templates)
+        if text == existing:
+            console.print(f"[yellow]![/] [cyan]{output}[/] already contains {label}")
+            return
+    output.write_text(text, encoding="utf-8")
+    console.print(f"[green]✓[/] Wrote [bold]{label}[/] to [cyan]{output}[/]")
 
 
 def is_interactive() -> bool:
@@ -90,12 +146,31 @@ def _resolve_license(license_id: str | None, *, interactive: bool) -> License:
         return prompts.select_license(LICENSES)
     lic = find(license_id)
     if lic is None:
-        known = {known.spdx_id.casefold(): known.spdx_id for known in LICENSES}
-        close = difflib.get_close_matches(license_id.casefold(), known, n=1, cutoff=0.5)
-        hint = f" Did you mean {known[close[0]]}?" if close else " See --list."
-        msg = f"unknown license {license_id!r}.{hint}"
+        msg = f"unknown license {license_id!r}.{_suggest(license_id, [known.spdx_id for known in LICENSES])}"
         raise typer.BadParameter(msg, param_hint="LICENSE")
     return lic
+
+
+def _resolve_templates(names: list[str] | None, *, interactive: bool) -> list[gitignore.Template]:
+    if not names:
+        if not interactive:
+            msg = "no template given; pass one or more names or run in a terminal (see --list)"
+            raise typer.BadParameter(msg, param_hint="TEMPLATE")
+        return prompts.select_templates(gitignore.catalogue())
+    templates: dict[str, gitignore.Template] = {}
+    for name in names:
+        template = gitignore.find(name)
+        if template is None:
+            msg = f"unknown template {name!r}.{_suggest(name, [known.name for known in gitignore.catalogue()])}"
+            raise typer.BadParameter(msg, param_hint="TEMPLATE")
+        templates[template.name] = template
+    return list(templates.values())
+
+
+def _suggest(key: str, candidates: list[str]) -> str:
+    known = {candidate.casefold(): candidate for candidate in candidates}
+    close = difflib.get_close_matches(key.casefold(), known, n=1, cutoff=0.5)
+    return f" Did you mean {known[close[0]]}?" if close else " See --list."
 
 
 def _resolve_holder(lic: License, author: str | None, year: str | None, *, interactive: bool) -> tuple[str, str]:
@@ -119,11 +194,31 @@ def _check_overwrite(output: Path, *, force: bool, interactive: bool) -> None:
     raise typer.Exit(1)
 
 
-def _print_catalogue() -> None:
+def _ask_existing(output: Path, *, interactive: bool) -> bool:
+    """Decide what to do with an existing file; returns whether to append to it."""
+    if not interactive:
+        console.print(f"[red]error:[/] {output} already exists, use --force to overwrite or --append to add to it")
+        raise typer.Exit(1)
+    choice = prompts.ask_existing(output)
+    if choice == "cancel":
+        raise typer.Abort
+    return choice == "append"
+
+
+def _print_licenses() -> None:
     table = Table(box=None, pad_edge=False, header_style="bold")
     table.add_column("ID", style="cyan", no_wrap=True)
     table.add_column("Name")
     table.add_column("Summary", style="dim")
     for lic in LICENSES:
         table.add_row(lic.spdx_id, lic.name, lic.summary)
+    Console().print(table)
+
+
+def _print_templates() -> None:
+    table = Table(box=None, pad_edge=False, header_style="bold")
+    table.add_column("Name", style="cyan", no_wrap=True)
+    table.add_column("Group", style="dim")
+    for template in gitignore.catalogue():
+        table.add_row(template.name, template.group)
     Console().print(table)

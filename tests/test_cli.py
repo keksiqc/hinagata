@@ -23,7 +23,7 @@ def test_version() -> None:
 
 
 def test_list_shows_every_license() -> None:
-    result = runner.invoke(cli.app, ["--list"])
+    result = runner.invoke(cli.app, ["license", "--list"])
 
     assert result.exit_code == 0
     for lic in LICENSES:
@@ -33,7 +33,7 @@ def test_list_shows_every_license() -> None:
 def test_writes_license_file(tmp_path) -> None:
     out = tmp_path / "LICENSE"
 
-    result = runner.invoke(cli.app, ["mit", "-a", "Ada Lovelace", "-y", "1843", "-o", str(out)])
+    result = runner.invoke(cli.app, ["license", "mit", "-a", "Ada Lovelace", "-y", "1843", "-o", str(out)])
 
     assert result.exit_code == 0
     assert "Copyright (c) 1843 Ada Lovelace" in out.read_text()
@@ -42,7 +42,7 @@ def test_writes_license_file(tmp_path) -> None:
 def test_defaults_author_and_current_year(tmp_path) -> None:
     out = tmp_path / "LICENSE"
 
-    result = runner.invoke(cli.app, ["MIT", "-o", str(out)])
+    result = runner.invoke(cli.app, ["license", "MIT", "-o", str(out)])
 
     assert result.exit_code == 0
     assert "Git User" in out.read_text()
@@ -50,7 +50,7 @@ def test_defaults_author_and_current_year(tmp_path) -> None:
 
 
 def test_stdout_output() -> None:
-    result = runner.invoke(cli.app, ["isc", "-a", "Ada", "-y", "2026", "-o", "-"])
+    result = runner.invoke(cli.app, ["license", "isc", "-a", "Ada", "-y", "2026", "-o", "-"])
 
     assert result.exit_code == 0
     assert "Copyright (c) 2026 Ada" in result.stdout
@@ -59,7 +59,7 @@ def test_stdout_output() -> None:
 def test_license_without_holder_is_verbatim(tmp_path) -> None:
     out = tmp_path / "LICENSE"
 
-    result = runner.invoke(cli.app, ["GPL-3.0", "-o", str(out)])
+    result = runner.invoke(cli.app, ["license", "GPL-3.0", "-o", str(out)])
 
     lic = find("GPL-3.0")
     assert lic is not None
@@ -68,20 +68,20 @@ def test_license_without_holder_is_verbatim(tmp_path) -> None:
 
 
 def test_unknown_license_suggests_match() -> None:
-    result = runner.invoke(cli.app, ["mitt"])
+    result = runner.invoke(cli.app, ["license", "mitt"])
 
     assert result.exit_code == 2
     assert "Did you mean MIT?" in result.output
 
 
 def test_invalid_year() -> None:
-    result = runner.invoke(cli.app, ["mit", "-y", "last year"])
+    result = runner.invoke(cli.app, ["license", "mit", "-y", "last year"])
 
     assert result.exit_code == 2
 
 
 def test_missing_license_without_terminal() -> None:
-    result = runner.invoke(cli.app, [])
+    result = runner.invoke(cli.app, ["license"])
 
     assert result.exit_code == 2
 
@@ -90,7 +90,7 @@ def test_refuses_to_overwrite(tmp_path) -> None:
     out = tmp_path / "LICENSE"
     out.write_text("keep me")
 
-    result = runner.invoke(cli.app, ["mit", "-o", str(out)])
+    result = runner.invoke(cli.app, ["license", "mit", "-o", str(out)])
 
     assert result.exit_code == 1
     assert out.read_text() == "keep me"
@@ -100,7 +100,7 @@ def test_force_overwrites(tmp_path) -> None:
     out = tmp_path / "LICENSE"
     out.write_text("replace me")
 
-    result = runner.invoke(cli.app, ["mit", "-f", "-o", str(out)])
+    result = runner.invoke(cli.app, ["license", "mit", "-f", "-o", str(out)])
 
     assert result.exit_code == 0
     assert out.read_text() != "replace me"
@@ -128,7 +128,7 @@ def test_interactive_flow(monkeypatch, tmp_path) -> None:
     monkeypatch.setattr(prompts, "ask_author", ask_author)
     monkeypatch.setattr(prompts, "ask_year", ask_year)
 
-    result = runner.invoke(cli.app, ["-o", str(out)])
+    result = runner.invoke(cli.app, ["license", "-o", str(out)])
 
     assert result.exit_code == 0
     assert asked["author"] == "Git User"
@@ -146,7 +146,7 @@ def test_interactive_skips_prompts_for_given_flags(monkeypatch, tmp_path) -> Non
     monkeypatch.setattr(prompts, "ask_author", fail)
     monkeypatch.setattr(prompts, "ask_year", fail)
 
-    result = runner.invoke(cli.app, ["mit", "-a", "Ada", "-y", "1843", "-o", str(out)])
+    result = runner.invoke(cli.app, ["license", "mit", "-a", "Ada", "-y", "1843", "-o", str(out)])
 
     assert result.exit_code == 0
 
@@ -158,7 +158,7 @@ def test_interactive_overwrite_confirmation(monkeypatch, tmp_path, answer, repla
     out.write_text("old")
     monkeypatch.setattr(prompts, "confirm_overwrite", lambda _path: answer)
 
-    result = runner.invoke(cli.app, ["mit", "-a", "Ada", "-y", "1843", "-o", str(out)])
+    result = runner.invoke(cli.app, ["license", "mit", "-a", "Ada", "-y", "1843", "-o", str(out)])
 
     assert (out.read_text() != "old") is replaced
     assert result.exit_code == (0 if replaced else 1)

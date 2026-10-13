@@ -8,6 +8,7 @@ from pathlib import Path
 import questionary
 import typer
 
+from .gitignore import Template
 from .licenses import License, is_valid_year
 
 
@@ -41,6 +42,26 @@ def select_license(licenses: Sequence[License]) -> License:
     return _ask(question)
 
 
+def select_templates(templates: Sequence[Template]) -> list[Template]:
+    """Let the user pick one or more gitignore templates from a filterable list."""
+    width = max(len(template.name) for template in templates)
+    choices = [
+        questionary.Choice(f"{template.name:<{width}}  {template.group}", value=template) for template in templates
+    ]
+    question = questionary.checkbox(
+        "Choose gitignore templates",
+        choices=choices,
+        qmark=QMARK,
+        style=STYLE,
+        pointer="\u276f",
+        instruction="(type to filter, space to select)",
+        validate=lambda picked: bool(picked) or "Select at least one template",
+        use_search_filter=True,
+        use_jk_keys=False,
+    )
+    return _ask(question)
+
+
 def ask_author(default: str) -> str:
     """Ask for the copyright holder."""
     question = questionary.text(
@@ -68,6 +89,23 @@ def ask_year(default: str) -> str:
 def confirm_overwrite(path: Path) -> bool:
     """Ask whether an existing file may be replaced."""
     question = questionary.confirm(f"{path} already exists. Overwrite?", default=False, qmark=QMARK, style=STYLE)
+    return _ask(question)
+
+
+def ask_existing(path: Path) -> str:
+    """Ask what to do with an existing file: ``append``, ``overwrite`` or ``cancel``."""
+    question = questionary.select(
+        f"{path} already exists",
+        choices=[
+            questionary.Choice("Append the missing templates", value="append"),
+            questionary.Choice("Overwrite it", value="overwrite"),
+            questionary.Choice("Cancel", value="cancel"),
+        ],
+        qmark=QMARK,
+        style=STYLE,
+        pointer="\u276f",
+        use_jk_keys=False,
+    )
     return _ask(question)
 
 
