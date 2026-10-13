@@ -1,8 +1,14 @@
 ## v0.3.3 (2026-10-13)
 
+- project metadata and readme updated
+
 ## v0.3.2 (2026-10-13)
 
+- project metadata and readme updated
+
 ## v0.3.1 (2026-10-13)
+
+- project metadata and readme updated
 
 ## v0.3.0 (2026-10-13)
 
