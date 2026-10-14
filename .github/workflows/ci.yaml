@@ -84,8 +84,8 @@ jobs:
   coverage:
     name: Coverage
     needs: test
-    timeout-minutes: 10
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
@@ -113,10 +113,10 @@ jobs:
 
   all-checks-pass:
     name: All checks pass
-    if: always()
     needs: [lint, typecheck, test, coverage]
-    timeout-minutes: 10
+    if: always()
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Check job results
         uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # v1.3.0

@@ -2,9 +2,11 @@ name: CodeQL
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
   schedule:
     - cron: "0 6 * * 1"
 
@@ -19,6 +21,7 @@ jobs:
     name: Analyze
     if: ${{ github.event.repository.private == false || vars.CODE_SECURITY_ENABLED == 'true' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       actions: read # Read workflow run metadata for the analysis
       contents: read # Check out the repository
@@ -31,8 +34,8 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
         with:
-          languages: python # Add c-cpp, go, java-kotlin, or swift if needed
-          build-mode: none # Switch to autobuild for compiled languages
+          languages: python
+          build-mode: none
           queries: security-extended
 
       - name: Perform CodeQL Analysis

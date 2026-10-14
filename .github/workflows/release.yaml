@@ -3,12 +3,12 @@ name: Release
 on:
   workflow_call:
 
+permissions: {}
+
 concurrency:
   # github.workflow is the caller's name here, so use a group of our own to stay clear of the CI run.
   group: release-${{ github.ref }}
   cancel-in-progress: false
-
-permissions: {}
 
 jobs:
   release:
@@ -17,7 +17,6 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: write # Create the GitHub release
-
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

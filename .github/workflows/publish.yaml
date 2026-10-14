@@ -9,6 +9,7 @@ permissions: {}
 
 concurrency:
   group: publish
+  cancel-in-progress: false
 
 jobs:
   ci:
@@ -21,6 +22,7 @@ jobs:
     name: Build distribution
     needs: ci
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
@@ -46,6 +48,7 @@ jobs:
     name: Publish to PyPI
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       id-token: write # PyPI trusted publishing and build provenance attestation via OIDC
       attestations: write # Store the build provenance attestation

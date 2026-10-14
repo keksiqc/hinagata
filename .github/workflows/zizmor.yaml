@@ -7,11 +7,8 @@ on:
     paths:
       - ".github/workflows/**"
   pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - ready_for_review
+    branches:
+      - main
     paths:
       - ".github/workflows/**"
 
@@ -25,6 +22,7 @@ jobs:
   zizmor:
     name: Run zizmor
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       actions: read # Read workflow run metadata for the analysis
       contents: read # Check out the repository
