@@ -48,5 +48,5 @@ hooks = [{ id = "ruff-format" }, { id = "ruff-check", args = ["--fix"] }]
 
 [[repos]]
 repo = "https://github.com/tombi-toml/tombi-pre-commit"
-rev = "0d5fcb91ac3b9ebc04fddc5331601511fd744701"  # frozen: v1.8.2
+rev = "2306a9334f9916a37d72c533926a4056fdc8482b"  # frozen: v1.8.4
 hooks = [{ id = "tombi-format" }, { id = "tombi-lint" }]
