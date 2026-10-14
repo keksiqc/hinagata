@@ -47,8 +47,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
-      attestations: write
+      id-token: write # PyPI trusted publishing and build provenance attestation via OIDC
+      attestations: write # Store the build provenance attestation
     # Requires environment protection rules in GitHub Settings:
     # Settings > Environments > pypi > Add required reviewers
     # and restrict deployment to v* tags.
@@ -75,4 +75,4 @@ jobs:
     needs: publish
     uses: $/.github/workflows/release.yaml
     permissions:
-      contents: write
+      contents: write # Create the GitHub release
