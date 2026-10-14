@@ -2,15 +2,13 @@ name: CI
 
 on:
   workflow_dispatch:
+  workflow_call:
   push:
     branches:
       - main
   pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - ready_for_review
+    branches:
+      - main
 
 permissions: {}
 
@@ -22,6 +20,7 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
@@ -40,6 +39,7 @@ jobs:
   typecheck:
     name: Type check
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
@@ -55,6 +55,7 @@ jobs:
   test:
     name: Test (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     strategy:
@@ -81,6 +82,7 @@ jobs:
   coverage:
     name: Coverage
     needs: test
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -111,6 +113,7 @@ jobs:
     name: All checks pass
     if: always()
     needs: [lint, typecheck, test, coverage]
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
       - name: Check job results
