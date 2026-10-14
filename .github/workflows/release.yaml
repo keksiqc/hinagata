@@ -1,13 +1,12 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
+  workflow_call:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # github.workflow is the caller's name here, so use a group of our own to stay clear of the CI run.
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
 
 permissions: {}
 
@@ -32,9 +31,9 @@ jobs:
           python-version: "3.x"
 
       - name: Create changelog
-        run: cz changelog --dry-run "${GITHUB_REF_NAME}" > .changelog.md
+        run: cz changelog --dry-run "$(cz version -p)" > .changelog.md
 
       - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "${GITHUB_REF_NAME}" --notes-file .changelog.md
+        run: gh release create "v$(cz version -p)" --verify-tag --notes-file .changelog.md

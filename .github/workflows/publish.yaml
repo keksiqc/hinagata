@@ -11,8 +11,15 @@ concurrency:
   group: publish
 
 jobs:
+  ci:
+    name: CI
+    uses: $/.github/workflows/ci.yaml
+    permissions:
+      contents: read
+
   build:
     name: Build distribution
+    needs: ci
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -62,3 +69,10 @@ jobs:
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+
+  release:
+    name: Release
+    needs: publish
+    uses: $/.github/workflows/release.yaml
+    permissions:
+      contents: write
