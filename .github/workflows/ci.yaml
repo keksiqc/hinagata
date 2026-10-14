@@ -70,7 +70,9 @@ jobs:
       - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
 
       - name: Run tests with coverage
-        run: uv run --python=${{ matrix.python-version }} coverage run -m pytest
+        env:
+          PYTHON_VERSION: ${{ matrix.python-version }}
+        run: uv run --python="$PYTHON_VERSION" coverage run -m pytest
 
       - name: Upload coverage data
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
