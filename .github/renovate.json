@@ -11,6 +11,12 @@
       "matchManagers": ["pep621"],
       "matchDepTypes": ["project.dependencies"],
       "rangeStrategy": "update-lockfile"
+    },
+    {
+      "description": "Leave the build backend range alone, it is raised by hand together with the uv version",
+      "matchManagers": ["pep621"],
+      "matchDepTypes": ["build-system.requires"],
+      "enabled": false
     }
   ],
   "customManagers": [
