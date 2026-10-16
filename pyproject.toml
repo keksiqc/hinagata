@@ -43,9 +43,9 @@ dev = [
   "ruff>=0.17.1",
   "rumdl>=0.2.79",
   "tombi>=1.8.5",
-  "ty>=0.0.88",
+  "ty>=0.0.89",
 ]
-docs = ["zensical>=0.0.70"]
+docs = ["zensical>=0.0.71"]
 
 [build-system]
 requires = ["uv_build>=0.13.0,<0.14"]
