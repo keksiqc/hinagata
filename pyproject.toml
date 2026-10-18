@@ -42,7 +42,7 @@ dev = [
   "pytest>=9.1.1",
   "ruff>=0.17.1",
   "rumdl>=0.2.79",
-  "tombi>=1.8.6",
+  "tombi>=1.8.7",
   "ty>=0.0.89",
 ]
 docs = ["zensical>=0.0.71"]
