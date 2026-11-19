@@ -8,6 +8,7 @@ from pathlib import Path
 import questionary
 import typer
 
+from .editorconfig import MAX_SIZE, MIN_SIZE, IndentStyle, is_valid_size
 from .gitignore import Template
 from .licenses import License, is_valid_year
 
@@ -84,6 +85,34 @@ def ask_year(default: str) -> str:
         validate=lambda value: is_valid_year(value) or "Use a year like 2026 or a range like 2020-2026",
     )
     return _ask(question).strip()
+
+
+def select_indent_style() -> IndentStyle:
+    """Ask whether to indent with spaces or tabs."""
+    question = questionary.select(
+        "Indent with",
+        choices=[
+            questionary.Choice("Spaces", value=IndentStyle.SPACE),
+            questionary.Choice("Tabs", value=IndentStyle.TAB),
+        ],
+        qmark=QMARK,
+        style=STYLE,
+        pointer="\u276f",
+        use_jk_keys=False,
+    )
+    return _ask(question)
+
+
+def ask_indent_size(default: int) -> int:
+    """Ask how many columns one level of indentation takes."""
+    question = questionary.text(
+        "Indent size",
+        default=str(default),
+        qmark=QMARK,
+        style=STYLE,
+        validate=lambda value: is_valid_size(value) or f"Use a whole number from {MIN_SIZE} to {MAX_SIZE}",
+    )
+    return int(_ask(question).strip())
 
 
 def confirm_overwrite(path: Path) -> bool:

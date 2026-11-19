@@ -53,9 +53,10 @@ after another: the license (plus author and year where the license needs them),
 then the gitignore templates. Without a terminal it prints the help instead.
 
 The two steps are also available as separate commands, `license` and
-`gitignore`. Run either without arguments to choose interactively. Everything
-can also be passed as arguments and flags, which skips the matching prompt and
-makes the command scriptable.
+`gitignore`. A third command, `editorconfig`, writes an `.editorconfig`. Run
+any of them without arguments to choose interactively. Everything can also be
+passed as arguments and flags, which skips the matching prompt and makes the
+command scriptable.
 
 ### License
 
@@ -104,6 +105,27 @@ If the file already exists, a terminal session asks whether to append,
 overwrite or cancel. Without a terminal the command fails unless you pass
 `--force` or `--append`. Appending is safe to repeat: templates whose header is
 already in the file are skipped.
+
+### EditorConfig
+
+```sh
+hinagata editorconfig                          # choose indentation, write ./.editorconfig
+hinagata editorconfig -s space -i 2            # two spaces, no prompts
+hinagata editorconfig -s tab -o -              # print to stdout
+```
+
+| Option               | Description                                                  |
+| -------------------- | ------------------------------------------------------------ |
+| `-s, --indent-style` | `space` or `tab`. If you omit it, hinagata asks. Without a terminal it uses `space`. |
+| `-i, --indent-size`  | Columns per level, 1 to 16. If you omit it, hinagata asks. Without a terminal it uses `4`. |
+| `-o, --output`       | File to write, or `-` for stdout. Defaults to `.editorconfig`. |
+| `-f, --force`        | Overwrite an existing file without asking.                   |
+
+The file sets UTF-8, LF line endings, no trailing whitespace and a final
+newline. With spaces it also indents web and config files (`json`, `yaml`,
+`toml` and similar) by two, and keeps tabs in `Makefile`. Markdown keeps its
+trailing whitespace, because two spaces at the end of a line mean a line break.
+This command is not part of the guided run of a bare `hinagata`.
 
 ### Short alias
 

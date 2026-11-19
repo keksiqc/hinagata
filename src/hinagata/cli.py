@@ -15,7 +15,8 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from . import gitignore, prompts
+from . import editorconfig, gitignore, prompts
+from .editorconfig import IndentStyle
 from .licenses import LICENSES, License, find, is_valid_year
 
 
@@ -127,6 +128,43 @@ def gitignore_command(
             return
     output.write_text(text, encoding="utf-8")
     console.print(f"[green]✓[/] Wrote [bold]{label}[/] to [cyan]{output}[/]")
+
+
+@app.command("editorconfig")
+def editorconfig_command(
+    indent_style: Annotated[
+        IndentStyle | None,
+        typer.Option("--indent-style", "-s", case_sensitive=False, help="Indent with spaces or tabs."),
+    ] = None,
+    indent_size: Annotated[
+        int | None,
+        typer.Option(
+            "--indent-size",
+            "-i",
+            min=editorconfig.MIN_SIZE,
+            max=editorconfig.MAX_SIZE,
+            help="Columns per indentation level.",
+        ),
+    ] = None,
+    output: Annotated[Path, typer.Option("--output", "-o", help="File to write, or - for stdout.")] = Path(
+        ".editorconfig"
+    ),
+    force: Annotated[bool, typer.Option("--force", "-f", help="Overwrite an existing file.")] = False,
+) -> None:
+    """Generate an .editorconfig file."""
+    interactive = is_interactive()
+    style = indent_style or (prompts.select_indent_style() if interactive else IndentStyle.SPACE)
+    size = indent_size or (
+        prompts.ask_indent_size(editorconfig.DEFAULT_SIZE) if interactive else editorconfig.DEFAULT_SIZE
+    )
+    text = editorconfig.render(style, size)
+
+    if str(output) == STDOUT:
+        typer.echo(text, nl=False)
+        return
+    _check_overwrite(output, force=force, interactive=interactive)
+    output.write_text(text, encoding="utf-8")
+    console.print(f"[green]✓[/] Wrote [bold]EditorConfig[/] ({style.value}, {size}) to [cyan]{output}[/]")
 
 
 def is_interactive() -> bool:
