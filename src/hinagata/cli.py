@@ -15,6 +15,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
+from . import detect as detection
 from . import editorconfig, gitignore, prompts
 from .editorconfig import IndentStyle
 from .licenses import LICENSES, License, find, is_valid_year
@@ -100,6 +101,9 @@ def gitignore_command(
     append: Annotated[
         bool, typer.Option("--append", help="Add the templates missing from an existing file instead of replacing it.")
     ] = False,
+    detect: Annotated[
+        bool, typer.Option("--detect", "-d", help="Add the templates that match the files in the output folder.")
+    ] = False,
     list_templates: Annotated[bool, typer.Option("--list", "-l", help="List the available templates.")] = False,
 ) -> None:
     """Generate a .gitignore file from one or more templates."""
@@ -111,7 +115,8 @@ def gitignore_command(
         raise typer.BadParameter(msg, param_hint="--append")
 
     interactive = is_interactive()
-    templates = _resolve_templates(names, interactive=interactive)
+    detected = _detect(output, names=names, interactive=interactive) if detect else []
+    templates = _resolve_templates(names, detected, interactive=interactive)
     text = gitignore.render(templates)
     label = ", ".join(template.name for template in templates)
 
@@ -200,12 +205,31 @@ def _resolve_license(license_id: str | None, *, interactive: bool) -> License:
     return lic
 
 
-def _resolve_templates(names: list[str] | None, *, interactive: bool) -> list[gitignore.Template]:
+def _detect(output: Path, *, names: list[str] | None, interactive: bool) -> list[gitignore.Template]:
+    """Templates that match the folder the file goes in, reporting what was found."""
+    folder = output.parent
+    detected = detection.detect(folder)
+    if detected:
+        if interactive:
+            console.print(f"[green]✓[/] Detected [bold]{', '.join(t.name for t in detected)}[/] in [cyan]{folder}[/]")
+    elif interactive:
+        console.print(f"[yellow]![/] Nothing detected in [cyan]{folder}[/]")
+    elif not names:
+        msg = f"nothing detected in {folder}; pass one or more template names"
+        raise typer.BadParameter(msg, param_hint="--detect")
+    return detected
+
+
+def _resolve_templates(
+    names: list[str] | None, detected: list[gitignore.Template], *, interactive: bool
+) -> list[gitignore.Template]:
     if not names:
-        if not interactive:
+        if interactive:
+            return prompts.select_templates(gitignore.catalogue(), selected=detected)
+        if not detected:
             msg = "no template given; pass one or more names or run in a terminal (see --list)"
             raise typer.BadParameter(msg, param_hint="TEMPLATE")
-        return prompts.select_templates(gitignore.catalogue())
+        return detected
     templates: dict[str, gitignore.Template] = {}
     for name in names:
         template = gitignore.find(name)
@@ -213,6 +237,8 @@ def _resolve_templates(names: list[str] | None, *, interactive: bool) -> list[gi
             msg = f"unknown template {name!r}.{_suggest(name, [known.name for known in gitignore.catalogue()])}"
             raise typer.BadParameter(msg, param_hint="TEMPLATE")
         templates[template.name] = template
+    for template in detected:
+        templates.setdefault(template.name, template)
     return list(templates.values())
 
 

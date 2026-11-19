@@ -179,7 +179,7 @@ def test_no_command_runs_every_select_in_turn(monkeypatch, tmp_path) -> None:
     monkeypatch.setattr(prompts, "select_license", lambda _licenses: find("ISC"))
     monkeypatch.setattr(prompts, "ask_author", lambda _default: "Ada Lovelace")
     monkeypatch.setattr(prompts, "ask_year", lambda _default: "1843")
-    monkeypatch.setattr(prompts, "select_templates", lambda _templates: [gitignore.find("Python")])
+    monkeypatch.setattr(prompts, "select_templates", lambda _templates, selected=(): [gitignore.find("Python")])
 
     result = runner.invoke(cli.app, [])
 
@@ -196,7 +196,9 @@ def test_no_command_stops_when_a_select_is_aborted(monkeypatch, tmp_path) -> Non
         raise typer.Abort
 
     monkeypatch.setattr(prompts, "select_license", abort)
-    monkeypatch.setattr(prompts, "select_templates", lambda _templates: pytest.fail("should not be reached"))
+    monkeypatch.setattr(
+        prompts, "select_templates", lambda _templates, selected=(): pytest.fail("should not be reached")
+    )
 
     result = runner.invoke(cli.app, [])
 

@@ -85,6 +85,7 @@ verbatim.
 ```sh
 hinagata gitignore Python Linux VisualStudioCode   # write ./.gitignore
 hinagata gitignore Node --append                   # add to an existing file
+hinagata gitignore --detect                        # choose from the files here
 hinagata gitignore Rust -o - > .gitignore          # print to stdout
 hinagata gitignore --list                          # show the templates
 ```
@@ -99,7 +100,17 @@ filter and pick as many templates as you need.
 | `-o, --output`  | File to write, or `-` for stdout. Defaults to `.gitignore`.           |
 | `-f, --force`   | Replace an existing file without asking.                              |
 | `--append`      | Add the templates the file is missing, leaving everything else alone. |
+| `-d, --detect`  | Add the templates that match the files in the output folder.          |
 | `-l, --list`    | List the available templates.                                         |
+
+With `--detect`, hinagata looks at the folder that holds the output file and
+at its direct subfolders. It matches well-known files: `pyproject.toml` gives
+Python, `package.json` gives Node, `Cargo.toml` gives Rust, `.vscode` gives
+VisualStudioCode, and so on. Hidden folders and folders such as `node_modules`
+are not entered. In a terminal, the checklist opens with the detected templates
+already ticked. Without a terminal, the command writes the detected templates
+and adds any names you give. It fails if nothing matches and you gave no names.
+The full list of markers is in `src/hinagata/detect.py`.
 
 If the file already exists, a terminal session asks whether to append,
 overwrite or cancel. Without a terminal the command fails unless you pass

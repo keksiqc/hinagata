@@ -126,7 +126,9 @@ def terminal(monkeypatch) -> None:
 @pytest.mark.usefixtures("terminal")
 def test_interactive_selection(monkeypatch, tmp_path) -> None:
     out = tmp_path / ".gitignore"
-    monkeypatch.setattr(prompts, "select_templates", lambda _templates: [_template("Rust"), _template("macOS")])
+    monkeypatch.setattr(
+        prompts, "select_templates", lambda _templates, selected=(): [_template("Rust"), _template("macOS")]
+    )
 
     result = runner.invoke(cli.app, ["gitignore", "-o", str(out)])
 

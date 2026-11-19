@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Collection, Sequence
 from pathlib import Path
 
 import questionary
@@ -43,11 +43,15 @@ def select_license(licenses: Sequence[License]) -> License:
     return _ask(question)
 
 
-def select_templates(templates: Sequence[Template]) -> list[Template]:
-    """Let the user pick one or more gitignore templates from a filterable list."""
+def select_templates(templates: Sequence[Template], selected: Collection[Template] = ()) -> list[Template]:
+    """Let the user pick one or more gitignore templates from a filterable list.
+
+    Templates in ``selected`` start out ticked.
+    """
     width = max(len(template.name) for template in templates)
     choices = [
-        questionary.Choice(f"{template.name:<{width}}  {template.group}", value=template) for template in templates
+        questionary.Choice(f"{template.name:<{width}}  {template.group}", value=template, checked=template in selected)
+        for template in templates
     ]
     question = questionary.checkbox(
         "Choose gitignore templates",
