@@ -15,6 +15,11 @@ run = ["ruff format", "ruff check --fix"]
 description = "Verify formatting, linting, type checking, and tests"
 run = ["ruff format --check", "ruff check", "ty check", "pytest"]
 
+[tasks.release]
+description = "Release a new version of the package"
+depends = ["check"]
+run = "cz bump"
+
 [tasks."docs:dev"]
 description = "Run docs server for development"
 run = ["uv run --group docs zensical serve"]

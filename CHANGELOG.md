@@ -1,3 +1,10 @@
+## v0.4.0 (2026-11-19)
+
+### Feat
+
+- **gitignore**: add --detect option to automatically select templates based on project files
+- **editorconfig**: add configurable EditorConfig generation
+
 ## v0.3.3 (2026-10-13)
 
 - project metadata and readme updated
